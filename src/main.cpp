@@ -43,7 +43,7 @@ static CBigNum bnProofOfStakeLimitTestNet(~uint256(0) >> 20);
 
 unsigned int nStakeMinAge = 60 * 60 * 24 * 10; // minimum age for coin age
 unsigned int nStakeMaxAge = 60 * 60 * 24 * 10; // stake age of full weight
-unsigned int nStakeTargetSpacing = 1 * 30; // 30 sec block spacing
+unsigned int nStakeTargetSpacing = 1 * 1 * 30; // 30 sec block spacing
 int64 nChainStartTime = 1371910049;
 int nCoinbaseMaturity = 5;
 CBlockIndex* pindexGenesisBlock = NULL;
@@ -976,7 +976,7 @@ int64 GetProofOfStakeReward(int64 nCoinAge, unsigned int nBits, unsigned int nTi
                 printf("GetProofOfStakeReward() : lower=%"PRI64d" upper=%"PRI64d" mid=%"PRI64d"\n", bnLowerBound.getuint64(), bnUpperBound.getuint64(), bnMidValue.getuint64());
             if (bnMidValue * bnMidValue * bnMidValue * bnMidValue * bnTargetLimit > bnRewardCoinYearLimit * bnRewardCoinYearLimit * bnRewardCoinYearLimit * bnRewardCoinYearLimit * bnTarget)
                 bnUpperBound = bnMidValue;
-            else 
+            else
                 bnLowerBound = bnMidValue;
         }
 
@@ -989,7 +989,7 @@ int64 GetProofOfStakeReward(int64 nCoinAge, unsigned int nBits, unsigned int nTi
         nRewardCoinYear = 0.015 * CENT;
     }
 
-    int64 nSubsidy = nRewardCoinYear * nCoinAge * 33 / (365 * 33 + 8) ;
+    int64 nSubsidy = nRewardCoinYear * nCoinAge * 33 / (365 * 33 + 8);
     if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfStakeReward(): create=%s nCoinAge=%"PRI64d" nBits=%d\n", FormatMoney(nSubsidy).c_str(), nCoinAge, nBits);
     return nSubsidy;
@@ -2485,7 +2485,7 @@ bool LoadBlockIndex(bool fAllowNew)
 
         bnProofOfStakeLimit = bnProofOfStakeLimitTestNet; // 0x00000fff PoS base target is fixed in testnet
         bnProofOfWorkLimit = bnProofOfWorkLimitTestNet; // 0x0000ffff PoW base target is fixed in testnet
-        nStakeMinAge = 5 * 60 *; // test net min age is 2 hours
+        nStakeMinAge = 5 * 60; // test net min age is 2 hours
         nModifierInterval = 1 * 60; // test modifier interval is 20 minutes
         nCoinbaseMaturity = 10; // test maturity is 10 blocks
         nStakeTargetSpacing = 1 * 30; // test block spacing is 3 minutes
