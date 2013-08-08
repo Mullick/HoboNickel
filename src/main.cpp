@@ -42,8 +42,8 @@ static CBigNum bnProofOfWorkLimitTestNet(~uint256(0) >> 16);
 static CBigNum bnProofOfStakeLimitTestNet(~uint256(0) >> 20);
 
 unsigned int nStakeMinAge = 60 * 60 * 24 * 10; // minimum age for coin age
-unsigned int nStakeMaxAge = 60 * 60 * 24 * 30; // stake age of full weight
-unsigned int nStakeTargetSpacing = 1 * 30; // 1-minute block spacing
+unsigned int nStakeMaxAge = 60 * 60 * 24 * 10; // stake age of full weight
+unsigned int nStakeTargetSpacing = 1 * 30; // 30 sec block spacing
 int64 nChainStartTime = 1371910049;
 int nCoinbaseMaturity = 5;
 CBlockIndex* pindexGenesisBlock = NULL;
@@ -967,7 +967,7 @@ int64 GetProofOfStakeReward(int64 nCoinAge, unsigned int nBits, unsigned int nTi
         //
         // nRewardCoinYear = 1 / (posdiff ^ 1/4)
 
-        CBigNum bnLowerBound = 10 * CENT; // Lower interest bound is 1% per year
+        CBigNum bnLowerBound = 1 * CENT; // Lower interest bound is 1% per year
         CBigNum bnUpperBound = bnRewardCoinYearLimit;
         while (bnLowerBound + CENT <= bnUpperBound)
         {
@@ -976,7 +976,7 @@ int64 GetProofOfStakeReward(int64 nCoinAge, unsigned int nBits, unsigned int nTi
                 printf("GetProofOfStakeReward() : lower=%"PRI64d" upper=%"PRI64d" mid=%"PRI64d"\n", bnLowerBound.getuint64(), bnUpperBound.getuint64(), bnMidValue.getuint64());
             if (bnMidValue * bnMidValue * bnMidValue * bnMidValue * bnTargetLimit > bnRewardCoinYearLimit * bnRewardCoinYearLimit * bnRewardCoinYearLimit * bnRewardCoinYearLimit * bnTarget)
                 bnUpperBound = bnMidValue;
-            else
+            else 
                 bnLowerBound = bnMidValue;
         }
 
@@ -989,7 +989,7 @@ int64 GetProofOfStakeReward(int64 nCoinAge, unsigned int nBits, unsigned int nTi
         nRewardCoinYear = 0.015 * CENT;
     }
 
-    int64 nSubsidy = nCoinAge * 33 / (365 * 33 + 8) * nRewardCoinYear;
+    int64 nSubsidy = nRewardCoinYear * nCoinAge * 33 / (365 * 33 + 8) ;
     if (fDebug && GetBoolArg("-printcreation"))
         printf("GetProofOfStakeReward(): create=%s nCoinAge=%"PRI64d" nBits=%d\n", FormatMoney(nSubsidy).c_str(), nCoinAge, nBits);
     return nSubsidy;
@@ -2485,10 +2485,10 @@ bool LoadBlockIndex(bool fAllowNew)
 
         bnProofOfStakeLimit = bnProofOfStakeLimitTestNet; // 0x00000fff PoS base target is fixed in testnet
         bnProofOfWorkLimit = bnProofOfWorkLimitTestNet; // 0x0000ffff PoW base target is fixed in testnet
-        nStakeMinAge = 2 * 60 * 60; // test net min age is 2 hours
-        nModifierInterval = 20 * 60; // test modifier interval is 20 minutes
+        nStakeMinAge = 5 * 60 *; // test net min age is 2 hours
+        nModifierInterval = 1 * 60; // test modifier interval is 20 minutes
         nCoinbaseMaturity = 10; // test maturity is 10 blocks
-        nStakeTargetSpacing = 1 * 60; // test block spacing is 3 minutes
+        nStakeTargetSpacing = 1 * 30; // test block spacing is 3 minutes
     }
 
     //
@@ -2774,10 +2774,10 @@ string GetWarnings(string strFor)
 
     // ppcoin: should not enter safe mode for longer invalid chain
     // ppcoin: if sync-checkpoint is too old do not enter safe mode
-    if (Checkpoints::IsSyncCheckpointTooOld(60 * 60 * 24 * 10) && !fTestNet && !IsInitialBlockDownload())
+    if (Checkpoints::IsSyncCheckpointTooOld(60 * 60 * 24 * 30) && !fTestNet && !IsInitialBlockDownload())
     {
     	nPriority = 100;
-    	strStatusBar = "WARNING: Checkpoint is too old. Redownload Blockchain. If warning persist contact the Development Team";
+    	strStatusBar = "The Hobo is here";
     }
 
     // ppcoin: if detected invalid checkpoint enter safe mode
@@ -4349,7 +4349,7 @@ void BitcoinMiner(CWallet *pwallet, bool fProofOfStake)
                     continue;
                 }
                 strMintWarning = "";
-                printf("CPUMiner : proof-of-stake block found %s\n", pblock->GetHash().ToString().c_str()); 
+                printf("CPUMiner : Hobo-stake block found %s\n", pblock->GetHash().ToString().c_str()); 
                 SetThreadPriority(THREAD_PRIORITY_NORMAL);
                 CheckWork(pblock.get(), *pwalletMain, reservekey);
                 SetThreadPriority(THREAD_PRIORITY_LOWEST);
