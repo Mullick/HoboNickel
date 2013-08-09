@@ -981,7 +981,7 @@ int64 GetProofOfStakeReward(int64 nCoinAge, unsigned int nBits, unsigned int nTi
         }
 
         nRewardCoinYear = bnUpperBound.getuint64();
-            if (nTime > ROUND_SWITCH_TIME)
+            if (nTime > POS_REWARD_SWITCH_TIME)
           nRewardCoinYear = min(nRewardCoinYear, MAX_MINT_PROOF_OF_STAKE);
     else
           nRewardCoinYear = min((nRewardCoinYear / CENT) * CENT, MAX_MINT_PROOF_OF_STAKE);
@@ -993,7 +993,7 @@ int64 GetProofOfStakeReward(int64 nCoinAge, unsigned int nBits, unsigned int nTi
     }
 
     int64 nSubsidy = nRewardCoinYear * nCoinAge * 33 / (365 * 33 + 8);
-    if (nTime > ROUND_SWITCH_TIME)
+    if (nTime > POS_REWARD_SWITCH_TIME)
         nSubsidy = (nCoinAge * 33 * nRewardCoinYear) / (365 * 33 + 8) ;
   else
         nSubsidy = nCoinAge * 33 / (365 * 33 + 8) * nRewardCoinYear;
