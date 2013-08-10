@@ -991,10 +991,11 @@ int64 GetProofOfStakeReward(int64 nCoinAge, unsigned int nBits, unsigned int nTi
         // Old creation amount per coin-year, 5% fixed stake mint rate
         nRewardCoinYear = 0.015 * CENT;
     }
-
+   
+//Stake calculation fix for small tx values courtesy of Mineral And Yukon Coinelius. This will fix the rounding of small stake rewards to zero
     int64 nSubsidy = nRewardCoinYear * nCoinAge * 33 / (365 * 33 + 8);
     if (nTime > POS_REWARD_SWITCH_TIME)
-        nSubsidy = (nCoinAge * 33 * nRewardCoinYear) / (365 * 33 + 8) ;
+        nSubsidy = (nCoinAge * 33 * nRewardCoinYear) / (365 * 33 + 8);
   else
         nSubsidy = nCoinAge * 33 / (365 * 33 + 8) * nRewardCoinYear;
 
