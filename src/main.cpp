@@ -953,7 +953,11 @@ int64 GetProofOfStakeReward(int64 nCoinAge, unsigned int nBits, unsigned int nTi
     {
         // Stage 2 of emission process is PoS-based. It will be active on mainNet since 20 Jun 2013.
 
-        CBigNum bnRewardCoinYearLimit = MAX_MINT_PROOF_OF_STAKE; // Base stake mint rate, 100% year interest
+
+        if (nTime > POS_REWARD_FIX_TIME)
+            CBigNum bnRewardCoinYearLimit = MAX_MINT_PROOF_OF_STAKE_FIX; // Base stake mint rate, 100% year interest
+        else    
+            CBigNum bnRewardCoinYearLimit = MAX_MINT_PROOF_OF_STAKE; // Base stake mint rate, 100% year interest
         CBigNum bnTarget;
         bnTarget.SetCompact(nBits);
         CBigNum bnTargetLimit = bnProofOfStakeLimit;
@@ -981,11 +985,10 @@ int64 GetProofOfStakeReward(int64 nCoinAge, unsigned int nBits, unsigned int nTi
         }
 
         nRewardCoinYear = bnUpperBound.getuint64();
-            if (nTime > POS_REWARD_SWITCH_TIME)
-          nRewardCoinYear = min(nRewardCoinYear, MAX_MINT_PROOF_OF_STAKE);
-    else
-          nRewardCoinYear = min((nRewardCoinYear / CENT) * CENT, MAX_MINT_PROOF_OF_STAKE);
-    }
+        if (nTime > POS_REWARD_SWITCH_TIME)
+           nRewardCoinYear = min(nRewardCoinYear, bnRewardCoinYearLimit);
+        else
+           nRewardCoinYear = min((nRewardCoinYear / CENT) * CENT, bnRewardCoinYearLimit);
     else
     {
         // Old creation amount per coin-year, 5% fixed stake mint rate
